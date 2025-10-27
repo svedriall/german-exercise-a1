@@ -1,64 +1,77 @@
-<!-- index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>German Article Trainer</title>
+  <meta charset="UTF-8">
+  <title>German A1 Vocabulary Trainer</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    body { font-family: sans-serif; margin: 2em; }
-    .card { border: 1px solid #ccc; padding: 1em; margin: 1em 0;}
-    .choices button { margin-right: .5em;}
+    body { font-family:sans-serif; background: #f7faff; color:#243241; margin:0; }
+    header { background:#0077c8; color:#fff; padding:1em 2em; }
+    .container { max-width:660px; margin:2em auto; padding:2em; background:#fff; border-radius:16px; box-shadow:0 6px 24px #dbeaf1; }
+    .card { padding:1em; border: 2px solid #e1eaf4; border-radius:8px; margin-bottom:2em; }
+    .word { font-size:2em; font-weight:700; letter-spacing:.06em }
+    .choices button { background:#0077c8; color:#fff; border:none; padding:.8em 2em; margin-right:1em; border-radius:8px; font-size:1rem; cursor:pointer;}
+    .choices button:hover { background:#005b94;}
     .result { font-weight: bold; margin-top: 1em;}
+    .sentence { margin-top:.5em; color:#16638a;}
+    .meaning { font-size:1.1em; font-style:italic; margin-top:.3em;}
+    .nav { margin-top:2em; }
+    .nav button { background:#eee; border:none; padding:.7em 2em; border-radius:8px; cursor:pointer; margin-right:1em;}
+    .nav button:hover { background:#e2eaff;}
+    @media (max-width:700px){.container{padding:.7em;}}
   </style>
 </head>
 <body>
-<h1>German Article Trainer</h1>
-<div id="app"></div>
+<header>
+  <h1>Modern German A1 Vocabulary Trainer</h1>
+</header>
+<div class="container">
+  <div id="app"></div>
+</div>
 <script>
 const words = [
   {word: "Apfel", article: "der", meaning: "apple", sentence: "Ich esse einen [translate:Apfel]."},
   {word: "Banane", article: "die", meaning: "banana", sentence: "[translate:Die Banane] ist gelb."},
   {word: "Brot", article: "das", meaning: "bread", sentence: "[translate:Das Brot] ist frisch."}
+  // ...repeat for all 650+ words from your file
 ];
-let idx = 0;
 
-function render() {
+let idx = 0;
+function renderCard() {
   const w = words[idx];
   document.getElementById("app").innerHTML = `
     <div class="card">
-      <div>Which article: <b>${w.word}</b>?</div>
+      <div class="word">${w.word}</div>
       <div class="choices">
         <button onclick="check('der')">der</button>
         <button onclick="check('die')">die</button>
         <button onclick="check('das')">das</button>
       </div>
-      <div>
-        <button onclick="showSentence()">Show sentence</button>
-        <button onclick="showMeaning()">Show meaning</button>
-      </div>
+      <div class="sentence">Example: ${w.sentence}</div>
+      <button onclick="showMeaning()">Show Meaning</button>
       <div id="output"></div>
     </div>
-    <button onclick="prev()" ${idx===0?'disabled':''}>Prev</button>
-    <button onclick="next()" ${idx===words.length-1?'disabled':''}>Next</button>
+    <div class="nav">
+      <button onclick="prev()" ${idx===0?'disabled':''}>Prev</button>
+      <button onclick="next()" ${idx===words.length-1?'disabled':''}>Next</button>
+      <span style="margin-left:2em;">${idx+1} / ${words.length}</span>
+    </div>
   `;
 }
-
-function check(a) {
+function check(article) {
   const correct = words[idx].article;
-  const out = document.getElementById('output');
-  if(a===correct)
-    out.innerHTML = `<span class="result" style="color:green;">Correct!</span>`;
-  else
-    out.innerHTML = `<span class="result" style="color:red;">Incorrect! It is "${correct}".</span>`;
-}
-function showSentence() {
-  document.getElementById('output').innerHTML = "<i>"+words[idx].sentence+"</i>";
+  document.getElementById('output').innerHTML =
+    article === correct
+      ? `<span class="result" style="color:green;">Correct!</span>`
+      : `<span class="result" style="color:red;">Incorrect! The answer is "${correct}".</span>`;
 }
 function showMeaning() {
-  document.getElementById('output').innerHTML = "English: "+words[idx].meaning;
+  document.getElementById('output').innerHTML =
+    `<span class="meaning">English: ${words[idx].meaning}</span>`;
 }
-function next() { if(idx < words.length -1) { idx++; render();} }
-function prev() { if(idx > 0) { idx--; render();}}
-window.onload = render;
+function next() { if(idx < words.length-1){ idx++; renderCard(); } }
+function prev() { if(idx > 0){ idx--; renderCard(); } }
+window.onload = renderCard;
 </script>
 </body>
 </html>

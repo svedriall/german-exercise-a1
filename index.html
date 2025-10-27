@@ -1,0 +1,64 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>German Article Trainer</title>
+  <style>
+    body { font-family: sans-serif; margin: 2em; }
+    .card { border: 1px solid #ccc; padding: 1em; margin: 1em 0;}
+    .choices button { margin-right: .5em;}
+    .result { font-weight: bold; margin-top: 1em;}
+  </style>
+</head>
+<body>
+<h1>German Article Trainer</h1>
+<div id="app"></div>
+<script>
+const words = [
+  {word: "Apfel", article: "der", meaning: "apple", sentence: "Ich esse einen [translate:Apfel]."},
+  {word: "Banane", article: "die", meaning: "banana", sentence: "[translate:Die Banane] ist gelb."},
+  {word: "Brot", article: "das", meaning: "bread", sentence: "[translate:Das Brot] ist frisch."}
+];
+let idx = 0;
+
+function render() {
+  const w = words[idx];
+  document.getElementById("app").innerHTML = `
+    <div class="card">
+      <div>Which article: <b>${w.word}</b>?</div>
+      <div class="choices">
+        <button onclick="check('der')">der</button>
+        <button onclick="check('die')">die</button>
+        <button onclick="check('das')">das</button>
+      </div>
+      <div>
+        <button onclick="showSentence()">Show sentence</button>
+        <button onclick="showMeaning()">Show meaning</button>
+      </div>
+      <div id="output"></div>
+    </div>
+    <button onclick="prev()" ${idx===0?'disabled':''}>Prev</button>
+    <button onclick="next()" ${idx===words.length-1?'disabled':''}>Next</button>
+  `;
+}
+
+function check(a) {
+  const correct = words[idx].article;
+  const out = document.getElementById('output');
+  if(a===correct)
+    out.innerHTML = `<span class="result" style="color:green;">Correct!</span>`;
+  else
+    out.innerHTML = `<span class="result" style="color:red;">Incorrect! It is "${correct}".</span>`;
+}
+function showSentence() {
+  document.getElementById('output').innerHTML = "<i>"+words[idx].sentence+"</i>";
+}
+function showMeaning() {
+  document.getElementById('output').innerHTML = "English: "+words[idx].meaning;
+}
+function next() { if(idx < words.length -1) { idx++; render();} }
+function prev() { if(idx > 0) { idx--; render();}}
+window.onload = render;
+</script>
+</body>
+</html>
